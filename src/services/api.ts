@@ -42,3 +42,8 @@ export const getClassrooms = async (): Promise<Classroom[]> => {
   const { data } = await axiosInstance().get('/classrooms');
   return data;
 };
+
+export const getSingleClassRoom = async (id: number): Promise<Classroom> => {
+  const { data } = await axiosInstance().get(`/classrooms/${id}`);
+  return data;
+};

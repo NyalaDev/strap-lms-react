@@ -44,7 +44,10 @@ const HomePage: React.FC<RouteComponentProps> = () => {
         <Grid container spacing={2}>
           {studetnClassrooms?.map(classroom => (
             <Grid key={classroom.id} item xs={6} md={4}>
-              <ClassroomCard classroom={classroom} />
+              <ClassroomCard
+                classroom={classroom}
+                link={`/classrooms/${classroom.id}`}
+              />
             </Grid>
           ))}
         </Grid>
@@ -60,7 +63,10 @@ const HomePage: React.FC<RouteComponentProps> = () => {
       <Grid container spacing={2}>
         {classrooms?.map(classroom => (
           <Grid key={classroom.id} item xs={6} md={4}>
-            <ClassroomCard classroom={classroom} />
+            <ClassroomCard
+              classroom={classroom}
+              link={`/classrooms/${classroom.id}`}
+            />
           </Grid>
         ))}
       </Grid>

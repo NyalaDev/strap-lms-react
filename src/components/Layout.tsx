@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Copyright from './Copyright';
-import { navigate } from '@reach/router';
+import { navigate, Link } from '@reach/router';
 import { AuthContext } from '../context/AuthContext';
 
 const Layout: React.FC = ({ children }) => {
@@ -22,14 +22,18 @@ const Layout: React.FC = ({ children }) => {
     <Box sx={{ flexGrow: 1 }}>
       <CssBaseline />
       <AppBar position='static'>
-        <Toolbar>
-          <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-            Strapi LMS
-          </Typography>
-          <Button onClick={handleLogout} color='inherit'>
-            Logout
-          </Button>
-        </Toolbar>
+        <Container>
+          <Toolbar>
+            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+              <Link to='/' style={{ textDecoration: 'none', color: '#fff' }}>
+                Strapi LMS
+              </Link>
+            </Typography>
+            <Button onClick={handleLogout} color='inherit'>
+              Logout
+            </Button>
+          </Toolbar>
+        </Container>
       </AppBar>
       <Box
         component='main'

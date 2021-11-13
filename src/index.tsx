@@ -8,12 +8,14 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
+import ClassroomPage from './pages/ClassroomPage';
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
       <Router>
         <PrivateRoute component={HomePage} path='/' />
+        <PrivateRoute component={ClassroomPage} path='/classrooms/:id' />
         <LoginPage path='/login' />
       </Router>
     </AuthProvider>
