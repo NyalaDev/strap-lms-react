@@ -6,9 +6,10 @@ import {
   UserSigninResponse,
   Classroom,
 } from '../types/api.types';
+import { getTokenFromLocaleStorageIfAny } from './localStorage';
 
 const axiosInstance = () => {
-  const token = undefined;
+  const token = getTokenFromLocaleStorageIfAny();
   const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
   const params: AxiosRequestConfig = {
     baseURL: process.env.REACT_APP_STRAPI_API_URL,
@@ -45,5 +46,10 @@ export const getClassrooms = async (): Promise<Classroom[]> => {
 
 export const getSingleClassRoom = async (id: number): Promise<Classroom> => {
   const { data } = await axiosInstance().get(`/classrooms/${id}`);
+  return data;
+};
+
+export const enrollInClassroom = async (id: number): Promise<Classroom> => {
+  const { data } = await axiosInstance().post(`/enroll/${id}`);
   return data;
 };

@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Link } from '@reach/router';
 import {
   Card,
@@ -8,6 +8,8 @@ import {
   Button,
 } from '@mui/material';
 import { Classroom } from '../types/api.types';
+import ActivityIndicator from './ActivityIndicator';
+import { enrollInClassroom } from '../services/api';
 
 const CardLink: React.FC<{ url?: string }> = ({ children, url }) => {
   if (url) {
@@ -17,11 +19,32 @@ const CardLink: React.FC<{ url?: string }> = ({ children, url }) => {
   return <Fragment>{children}</Fragment>;
 };
 
-const ClassroomCard: React.FC<{ classroom: Classroom; link?: string }> = ({
+type ClassroomCardProps = {
+  classroom: Classroom;
+  link?: string;
+  disableEnrollAction?: boolean;
+  onRefresh?: () => void;
+};
+
+const ClassroomCard: React.FC<ClassroomCardProps> = ({
   classroom,
   link,
+  disableEnrollAction = false,
+  onRefresh,
 }) => {
+  const [active, setActive] = useState(false);
   const spotsLeft = classroom.maxStudents - classroom.students.length;
+
+  const handleEnrollClick = async () => {
+    try {
+      setActive(true);
+      await enrollInClassroom(classroom.id);
+      onRefresh && onRefresh();
+    } finally {
+      setActive(false);
+    }
+  };
+
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
@@ -44,9 +67,15 @@ const ClassroomCard: React.FC<{ classroom: Classroom; link?: string }> = ({
       </CardContent>
       <CardActions>
         {link && (
-          <Button disabled={spotsLeft <= 0} size='small'>
-            {spotsLeft <= 0 ? 'No availability' : 'Enroll now'}
-          </Button>
+          <ActivityIndicator active={active} size={20}>
+            <Button
+              disabled={spotsLeft <= 0 || disableEnrollAction}
+              size='small'
+              onClick={handleEnrollClick}
+            >
+              {spotsLeft <= 0 ? 'No availability' : 'Enroll now'}
+            </Button>
+          </ActivityIndicator>
         )}
       </CardActions>
     </Card>

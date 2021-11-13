@@ -9,28 +9,28 @@ import { Classroom } from '../types/api.types';
 
 const HomePage: React.FC<RouteComponentProps> = () => {
   const { currentUser } = useContext(AuthContext);
-  const [fetching, setFetching] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [studetnClassrooms, setStudetnClassrooms] = useState<Classroom[]>();
   const [classrooms, setClassrooms] = useState<Classroom[]>();
+  const [refreshIndex, setRefreshIndex] = useState(0);
 
   useEffect(() => {
     const fetchClassrooms = async () => {
       try {
+        setFetching(true);
         const data = await getClassrooms();
         const userClassrooms = data.filter(item => {
           return item.students.find(s => s.id === currentUser?.id);
         });
         setStudetnClassrooms(userClassrooms);
         setClassrooms(data);
-      } catch (e) {
-        //
       } finally {
         setFetching(false);
       }
     };
 
     fetchClassrooms();
-  }, []);
+  }, [currentUser?.id, refreshIndex]);
 
   return (
     <ActivityIndicator active={fetching}>
@@ -45,6 +45,7 @@ const HomePage: React.FC<RouteComponentProps> = () => {
           {studetnClassrooms?.map(classroom => (
             <Grid key={classroom.id} item xs={6} md={4}>
               <ClassroomCard
+                disableEnrollAction
                 classroom={classroom}
                 link={`/classrooms/${classroom.id}`}
               />
@@ -66,6 +67,11 @@ const HomePage: React.FC<RouteComponentProps> = () => {
             <ClassroomCard
               classroom={classroom}
               link={`/classrooms/${classroom.id}`}
+              onRefresh={() => setRefreshIndex(r => r + 1)}
+              disableEnrollAction={
+                studetnClassrooms?.findIndex(sc => sc.id === classroom.id) !==
+                -1
+              }
             />
           </Grid>
         ))}

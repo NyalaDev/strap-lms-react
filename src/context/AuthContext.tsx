@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import useAuthHandler from '../hooks/useAuthHandler';
 import { getLocalStorage, clearLocalStorage } from '../services/localStorage';
-import { LOCALE_STORAGE_USER } from '../common/constants';
+import { LOCALE_STORAGE_USER, LOCALE_STORAGE_TOKEN } from '../common/constants';
 import { User } from '../types/api.types';
 
 /**
@@ -43,6 +43,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     setCurrentUser(null);
     setAuthToken('');
     clearLocalStorage(LOCALE_STORAGE_USER);
+    clearLocalStorage(LOCALE_STORAGE_TOKEN);
   };
   return (
     <AuthContext.Provider

@@ -1,5 +1,5 @@
 import { User } from '../types/api.types';
-import { LOCALE_STORAGE_USER } from '../common/constants';
+import { LOCALE_STORAGE_USER, LOCALE_STORAGE_TOKEN } from '../common/constants';
 
 export const isBrowser = typeof window !== 'undefined';
 export const getLocalStorage = (key: string): string | null => {
@@ -25,4 +25,12 @@ export const clearLocalStorage = (key: string): VoidFunction | undefined => {
 export const getUserFromLocaleStorageIfAny = (): User => {
   const user = getLocalStorage(LOCALE_STORAGE_USER);
   return user ? JSON.parse(user) : {};
+};
+
+/**
+ * Helper function to get token from locale storage if exists
+ */
+export const getTokenFromLocaleStorageIfAny = (): string => {
+  const token = getLocalStorage(LOCALE_STORAGE_TOKEN);
+  return token || '';
 };
