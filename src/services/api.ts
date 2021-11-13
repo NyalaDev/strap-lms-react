@@ -4,6 +4,7 @@ import {
   UserSignupData,
   UserSigninData,
   UserSigninResponse,
+  Classroom,
 } from '../types/api.types';
 
 const axiosInstance = () => {
@@ -34,5 +35,10 @@ export const signin = async (
   values: UserSigninData
 ): Promise<UserSigninResponse> => {
   const { data } = await axiosInstance().post(`/auth/local`, values);
+  return data;
+};
+
+export const getClassrooms = async (): Promise<Classroom[]> => {
+  const { data } = await axiosInstance().get('/classrooms');
   return data;
 };
