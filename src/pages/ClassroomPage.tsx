@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Grid,
   Box,
@@ -14,12 +14,16 @@ import ActivityIndicator from '../components/ActivityIndicator';
 import ClassroomCard from '../components/ClassroomCard';
 import { getSingleClassRoom } from '../services/api';
 import { Classroom, Tutorial } from '../types/api.types';
+import TutorialView from '../components/TutorialView';
 
 type ClassroomPageProps = RouteComponentProps<{ id: number }>;
 
 const ClassroomPage: React.FC<ClassroomPageProps> = ({ id }) => {
   const [fetching, setFetching] = useState(true);
   const [classroom, setClassroom] = useState<Classroom>({} as Classroom);
+  const [activeTutorial, setActiveTutorial] = useState<Tutorial>(
+    {} as Tutorial
+  );
 
   useEffect(() => {
     const getClassroomDetail = async () => {
@@ -27,7 +31,9 @@ const ClassroomPage: React.FC<ClassroomPageProps> = ({ id }) => {
         if (!id) {
           return navigate('/');
         }
-        setClassroom(await getSingleClassRoom(id));
+        const data = await getSingleClassRoom(id);
+        setClassroom(data);
+        setActiveTutorial(data.tutorials[0]);
       } catch (e) {
         //
       } finally {
@@ -38,10 +44,6 @@ const ClassroomPage: React.FC<ClassroomPageProps> = ({ id }) => {
     getClassroomDetail();
   }, [id]);
 
-  const handleListItemClick = (tutorial: Tutorial) => {
-    console.log(tutorial);
-  };
-
   return (
     <ActivityIndicator active={fetching}>
       <Grid container spacing={2}>
@@ -49,14 +51,22 @@ const ClassroomPage: React.FC<ClassroomPageProps> = ({ id }) => {
           <ClassroomCard classroom={classroom} />
         </Grid>
         <Grid item xs={8}>
+          <TutorialView tutorial={activeTutorial} />
           <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <List component='nav' aria-label='main mailbox folders'>
-              {classroom.tutorials.map(tutorial => (
-                <ListItemButton onClick={() => handleListItemClick(tutorial)}>
+              {classroom.tutorials?.map(tutorial => (
+                <ListItemButton
+                  key={tutorial.slug}
+                  onClick={() => setActiveTutorial(tutorial)}
+                  selected={activeTutorial.id === tutorial.id}
+                >
                   <ListItemIcon>
                     {tutorial.type === 'text' ? <TextIcon /> : <VideoIcon />}
                   </ListItemIcon>
-                  <ListItemText primary={tutorial.title} />
+                  <ListItemText
+                    primary={tutorial.title}
+                    secondary={tutorial.summary}
+                  />
                 </ListItemButton>
               ))}
             </List>
