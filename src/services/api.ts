@@ -6,13 +6,14 @@ import {
   UserSigninResponse,
   Classroom,
 } from '../types/api.types';
+import { DataAdapter } from './adapter';
 import { getTokenFromLocaleStorageIfAny } from './localStorage';
 
 const axiosInstance = () => {
   const token = getTokenFromLocaleStorageIfAny();
   const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
   const params: AxiosRequestConfig = {
-    baseURL: process.env.REACT_APP_STRAPI_API_URL,
+    baseURL: `${process.env.REACT_APP_STRAPI_API_URL}/api`,
     timeout: 10000,
   };
   if (headers) {
@@ -40,13 +41,13 @@ export const signin = async (
 };
 
 export const getClassrooms = async (): Promise<Classroom[]> => {
-  const { data } = await axiosInstance().get('/classrooms');
-  return data;
+  const { data } = await axiosInstance().get('/classrooms?populate=*');
+  return DataAdapter.apiClasses2AppClasses(data);
 };
 
 export const getSingleClassRoom = async (id: number): Promise<Classroom> => {
-  const { data } = await axiosInstance().get(`/classrooms/${id}`);
-  return data;
+  const { data } = await axiosInstance().get(`/classrooms/${id}?populate=*`);
+  return DataAdapter.apiClass2AppClass(data);
 };
 
 export const enrollInClassroom = async (id: number): Promise<Classroom> => {

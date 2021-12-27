@@ -52,3 +52,10 @@ type UserRole = {
   name: string;
   type: string;
 };
+
+export type APIResponse = {
+  data: {
+    id: number;
+    attributes: Record<string, any>;
+  };
+};
